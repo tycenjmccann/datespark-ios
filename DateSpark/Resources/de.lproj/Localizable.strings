@@ -1,0 +1,12 @@
+/* 
+  Localizable.strings (German)
+  DateSpark
+
+  Profile - Logout
+*/
+
+"profile.logout.button" = "Abmelden";
+"profile.logout.confirmation.title" = "Abmelden?";
+"profile.logout.confirmation.message" = "Möchten Sie sich wirklich abmelden?";
+"profile.logout.confirmation.confirm" = "Abmelden";
+"profile.logout.confirmation.cancel" = "Abbrechen";

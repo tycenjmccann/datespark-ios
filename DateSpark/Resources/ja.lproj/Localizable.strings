@@ -1,0 +1,12 @@
+/* 
+  Localizable.strings (Japanese)
+  DateSpark
+
+  Profile - Logout
+*/
+
+"profile.logout.button" = "ログアウト";
+"profile.logout.confirmation.title" = "ログアウトしますか？";
+"profile.logout.confirmation.message" = "アカウントからログアウトしてもよろしいですか？";
+"profile.logout.confirmation.confirm" = "ログアウト";
+"profile.logout.confirmation.cancel" = "キャンセル";

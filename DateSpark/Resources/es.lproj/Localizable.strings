@@ -1,0 +1,12 @@
+/* 
+  Localizable.strings (Spanish)
+  DateSpark
+
+  Profile - Logout
+*/
+
+"profile.logout.button" = "Cerrar sesión";
+"profile.logout.confirmation.title" = "¿Cerrar sesión?";
+"profile.logout.confirmation.message" = "¿Estás seguro de que quieres cerrar sesión?";
+"profile.logout.confirmation.confirm" = "Cerrar sesión";
+"profile.logout.confirmation.cancel" = "Cancelar";
