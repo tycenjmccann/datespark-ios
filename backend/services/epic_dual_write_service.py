@@ -17,9 +17,6 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, Optional, Tuple
 
-import boto3
-from botocore.exceptions import ClientError
-
 logger = logging.getLogger(__name__)
 
 
@@ -132,12 +129,8 @@ class JiraClient:
         """
         payload = epic_data.to_jira_payload()
         logger.info(
-            "Creating epic in Jira",
-            extra={
-                "ticket_id": epic_data.ticket_id,
-                "title": epic_data.title,
-                "workflow_id": epic_data.workflow_id,
-            },
+            f"Creating epic in Jira: ticket_id={epic_data.ticket_id}, "
+            f"title={epic_data.title}, workflow_id={epic_data.workflow_id}",
         )
 
         # Store in memory (for integration testing)
@@ -176,12 +169,8 @@ class DynamoDBClient:
         """
         item = epic_data.to_dynamodb_item()
         logger.info(
-            "Writing epic to DynamoDB",
-            extra={
-                "ticket_id": epic_data.ticket_id,
-                "table": self.table_name,
-                "workflow_id": epic_data.workflow_id,
-            },
+            f"Writing epic to DynamoDB: ticket_id={epic_data.ticket_id}, "
+            f"table={self.table_name}, workflow_id={epic_data.workflow_id}",
         )
 
         # Store in memory (for integration testing)
@@ -242,12 +231,10 @@ class EpicDualWriteService:
         )
 
         logger.info(
-            "Starting dual-write epic creation",
-            extra={
-                "correlation_id": correlation_id,
-                "ticket_id": epic_data.ticket_id,
-                "workflow_id": epic_data.workflow_id,
-            },
+            f"Starting dual-write epic creation: "
+            f"ticket_id={epic_data.ticket_id}, "
+            f"correlation_id={correlation_id}, "
+            f"workflow_id={epic_data.workflow_id}",
         )
 
         # Write to Jira
@@ -274,36 +261,26 @@ class EpicDualWriteService:
             try:
                 self.jira_client.create_epic(epic_data)
                 logger.info(
-                    "Jira write successful",
-                    extra={
-                        "correlation_id": correlation_id,
-                        "ticket_id": epic_data.ticket_id,
-                        "attempt": attempt,
-                    },
+                    f"Jira write successful: ticket_id={epic_data.ticket_id}, "
+                    f"correlation_id={correlation_id}, attempt={attempt}",
                 )
                 return WriteStatus.SUCCESS, None
             except Exception as e:
-                error_msg = f"Jira write failed (attempt {attempt}/{self.max_retries}): {str(e)}"
-                logger.warning(
-                    error_msg,
-                    extra={
-                        "correlation_id": correlation_id,
-                        "ticket_id": epic_data.ticket_id,
-                        "attempt": attempt,
-                        "error": str(e),
-                    },
+                error_msg = (
+                    f"Jira write failed (attempt {attempt}/{self.max_retries}): "
+                    f"ticket_id={epic_data.ticket_id}, "
+                    f"correlation_id={correlation_id}, "
+                    f"error={str(e)}"
                 )
+                logger.warning(error_msg)
                 if attempt < self.max_retries:
                     time.sleep(self.retry_delay * attempt)
 
-        final_error = f"Jira write failed after {self.max_retries} attempts"
-        logger.error(
-            final_error,
-            extra={
-                "correlation_id": correlation_id,
-                "ticket_id": epic_data.ticket_id,
-            },
+        final_error = (
+            f"Jira write failed after {self.max_retries} attempts: "
+            f"ticket_id={epic_data.ticket_id}"
         )
+        logger.error(final_error)
         return WriteStatus.FAILURE, final_error
 
     def _write_to_dynamodb(
@@ -314,71 +291,55 @@ class EpicDualWriteService:
             try:
                 self.dynamodb_client.put_epic(epic_data)
                 logger.info(
-                    "DynamoDB write successful",
-                    extra={
-                        "correlation_id": correlation_id,
-                        "ticket_id": epic_data.ticket_id,
-                        "attempt": attempt,
-                    },
+                    f"DynamoDB write successful: ticket_id={epic_data.ticket_id}, "
+                    f"correlation_id={correlation_id}, attempt={attempt}",
                 )
                 return WriteStatus.SUCCESS, None
             except Exception as e:
-                error_msg = f"DynamoDB write failed (attempt {attempt}/{self.max_retries}): {str(e)}"
-                logger.warning(
-                    error_msg,
-                    extra={
-                        "correlation_id": correlation_id,
-                        "ticket_id": epic_data.ticket_id,
-                        "attempt": attempt,
-                        "error": str(e),
-                    },
+                error_msg = (
+                    f"DynamoDB write failed (attempt {attempt}/{self.max_retries}): "
+                    f"ticket_id={epic_data.ticket_id}, "
+                    f"correlation_id={correlation_id}, "
+                    f"error={str(e)}"
                 )
+                logger.warning(error_msg)
                 if attempt < self.max_retries:
                     time.sleep(self.retry_delay * attempt)
 
-        final_error = f"DynamoDB write failed after {self.max_retries} attempts"
-        logger.error(
-            final_error,
-            extra={
-                "correlation_id": correlation_id,
-                "ticket_id": epic_data.ticket_id,
-            },
+        final_error = (
+            f"DynamoDB write failed after {self.max_retries} attempts: "
+            f"ticket_id={epic_data.ticket_id}"
         )
+        logger.error(final_error)
         return WriteStatus.FAILURE, final_error
 
     def _log_result(self, result: DualWriteResult, epic_data: EpicData) -> None:
         """Log the final dual-write result."""
         if result.is_fully_successful:
             logger.info(
-                "Dual-write completed successfully",
-                extra={
-                    "correlation_id": result.correlation_id,
-                    "ticket_id": epic_data.ticket_id,
-                    "jira_status": result.jira_status.value,
-                    "dynamodb_status": result.dynamodb_status.value,
-                },
+                f"Dual-write completed successfully: "
+                f"ticket_id={epic_data.ticket_id}, "
+                f"correlation_id={result.correlation_id}, "
+                f"jira_status={result.jira_status.value}, "
+                f"dynamodb_status={result.dynamodb_status.value}",
             )
         elif result.is_partial_failure:
             logger.error(
-                "PARTIAL FAILURE: Dual-write inconsistency detected",
-                extra={
-                    "correlation_id": result.correlation_id,
-                    "ticket_id": epic_data.ticket_id,
-                    "jira_status": result.jira_status.value,
-                    "dynamodb_status": result.dynamodb_status.value,
-                    "jira_error": result.jira_error,
-                    "dynamodb_error": result.dynamodb_error,
-                },
+                f"PARTIAL FAILURE: Dual-write inconsistency detected: "
+                f"ticket_id={epic_data.ticket_id}, "
+                f"correlation_id={result.correlation_id}, "
+                f"jira_status={result.jira_status.value}, "
+                f"dynamodb_status={result.dynamodb_status.value}, "
+                f"jira_error={result.jira_error}, "
+                f"dynamodb_error={result.dynamodb_error}",
             )
         else:
             logger.critical(
-                "TOTAL FAILURE: Both writes failed",
-                extra={
-                    "correlation_id": result.correlation_id,
-                    "ticket_id": epic_data.ticket_id,
-                    "jira_error": result.jira_error,
-                    "dynamodb_error": result.dynamodb_error,
-                },
+                f"TOTAL FAILURE: Both writes failed: "
+                f"ticket_id={epic_data.ticket_id}, "
+                f"correlation_id={result.correlation_id}, "
+                f"jira_error={result.jira_error}, "
+                f"dynamodb_error={result.dynamodb_error}",
             )
 
     def verify_consistency(
