@@ -1,0 +1,12 @@
+/* 
+  Localizable.strings (Brazilian Portuguese)
+  DateSpark
+
+  Profile - Logout
+*/
+
+"profile.logout.button" = "Sair";
+"profile.logout.confirmation.title" = "Sair?";
+"profile.logout.confirmation.message" = "Tem certeza de que deseja sair da sua conta?";
+"profile.logout.confirmation.confirm" = "Sair";
+"profile.logout.confirmation.cancel" = "Cancelar";

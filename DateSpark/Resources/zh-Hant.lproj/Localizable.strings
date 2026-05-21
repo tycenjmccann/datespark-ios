@@ -1,0 +1,12 @@
+/* 
+  Localizable.strings (Traditional Chinese)
+  DateSpark
+
+  Profile - Logout
+*/
+
+"profile.logout.button" = "登出";
+"profile.logout.confirmation.title" = "確定登出？";
+"profile.logout.confirmation.message" = "確定要登出帳號嗎？";
+"profile.logout.confirmation.confirm" = "登出";
+"profile.logout.confirmation.cancel" = "取消";

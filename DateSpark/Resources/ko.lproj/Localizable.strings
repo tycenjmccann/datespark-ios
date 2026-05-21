@@ -1,0 +1,12 @@
+/* 
+  Localizable.strings (Korean)
+  DateSpark
+
+  Profile - Logout
+*/
+
+"profile.logout.button" = "로그아웃";
+"profile.logout.confirmation.title" = "로그아웃하시겠습니까?";
+"profile.logout.confirmation.message" = "계정에서 로그아웃하시겠습니까?";
+"profile.logout.confirmation.confirm" = "로그아웃";
+"profile.logout.confirmation.cancel" = "취소";

@@ -1,0 +1,21 @@
+/* 
+  Localizable.strings (English)
+  DateSpark
+
+  Profile - Logout
+*/
+
+/* Button label on the profile screen to log the user out. Max ~12 characters recommended. */
+"profile.logout.button" = "Log Out";
+
+/* Title for the logout confirmation dialog */
+"profile.logout.confirmation.title" = "Log Out?";
+
+/* Body text for the logout confirmation dialog */
+"profile.logout.confirmation.message" = "Are you sure you want to log out of your account?";
+
+/* Confirm button in the logout dialog (destructive action) */
+"profile.logout.confirmation.confirm" = "Log Out";
+
+/* Cancel button in the logout confirmation dialog */
+"profile.logout.confirmation.cancel" = "Cancel";

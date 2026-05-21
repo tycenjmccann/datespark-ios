@@ -1,0 +1,12 @@
+/* 
+  Localizable.strings (French)
+  DateSpark
+
+  Profile - Logout
+*/
+
+"profile.logout.button" = "Déconnexion";
+"profile.logout.confirmation.title" = "Se déconnecter ?";
+"profile.logout.confirmation.message" = "Êtes-vous sûr de vouloir vous déconnecter ?";
+"profile.logout.confirmation.confirm" = "Déconnexion";
+"profile.logout.confirmation.cancel" = "Annuler";

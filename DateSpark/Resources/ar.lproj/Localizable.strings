@@ -1,0 +1,12 @@
+/* 
+  Localizable.strings (Arabic - RTL)
+  DateSpark
+
+  Profile - Logout
+*/
+
+"profile.logout.button" = "تسجيل الخروج";
+"profile.logout.confirmation.title" = "تسجيل الخروج؟";
+"profile.logout.confirmation.message" = "هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟";
+"profile.logout.confirmation.confirm" = "خروج";
+"profile.logout.confirmation.cancel" = "إلغاء";
