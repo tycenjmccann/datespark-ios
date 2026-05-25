@@ -8,6 +8,11 @@ import SwiftUI
 /// - `.loading` → Splash/loading screen
 /// - `.loggingOut` → Keep showing current UI (handled by loading state on button)
 ///
+/// Theme Management:
+/// - ThemeService reads preference from UserDefaults on init (before first render)
+/// - `.preferredColorScheme()` applied at WindowGroup level for immediate effect
+/// - No flash of wrong theme because UserDefaults is synchronous
+///
 /// Per TEAM-141 security requirements:
 /// - Uses navigation replacement (not push) to prevent back-button to authenticated content
 /// - Checks auth state on scenePhase changes
@@ -16,11 +21,14 @@ import SwiftUI
 struct DateSparkApp: App {
 
     @State private var authService = AuthService()
+    @State private var themeService = ThemeService()
 
     var body: some Scene {
         WindowGroup {
             rootView
                 .environment(authService)
+                .environment(themeService)
+                .preferredColorScheme(themeService.resolvedColorScheme)
                 .task {
                     authService.checkAuthState()
                 }

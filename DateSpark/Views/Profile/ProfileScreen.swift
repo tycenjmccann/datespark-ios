@@ -90,7 +90,10 @@ struct ProfileScreen: View {
             settingsRow(icon: "person.circle", title: "Account Settings")
             Divider().padding(.leading, 56)
 
-            settingsRow(icon: "slider.horizontal.3", title: "Preferences")
+            NavigationLink(destination: SettingsScreen()) {
+                settingsRow(icon: "slider.horizontal.3", title: "Preferences")
+            }
+            .buttonStyle(.plain)
             Divider().padding(.leading, 56)
 
             settingsRow(icon: "bell", title: "Notifications")
